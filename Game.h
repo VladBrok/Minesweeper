@@ -4,11 +4,15 @@
 #include "Field.h"
 
 
+const int FILED_SIZE_IN_TILES  = 10;
+const int NUMBER_OF_MINES      = 10;
+
+
 enum GameState
 {
     GAME,
-    VICTORY,
-    DEFEAT
+    DEFEAT,
+    VICTORY
 };
 
 
@@ -25,14 +29,12 @@ private:
     GameState           gameState;
     Field*              field;
     int                 fieldRenderOffset;
-    int                 fieldSizeInTiles;
-    int                 numberOfMines;
     sf::RenderWindow    window;
 
     sf::Font            font;
     sf::Text            minesCountText;
-    sf::Text            victoryText;
     sf::Text            gameOverText;
+    sf::Text            victoryText;
 
     void                initField();
     void                initWindow();

@@ -30,18 +30,20 @@ class Field
 public:
 
                                         Field(const int fieldSize = 9, const int numberOfMines = 10);
+    void                                render(sf::RenderTarget& target);
     void                                setPosition(const int x, const int y);
+
     const Tile                          openTile(const int row, const int column); // returns opened tile
     void                                changeFlagStateAtTile(const int row, const int column);
     const int                           getNumberOfFlags() const;
-    void                                render(sf::RenderTarget& target);
+    const int                           getNumberOfOpenedTiles() const;
 
 private:
 
     const int                           FIELD_SIZE;
     const int                           NUMBER_OF_MINES;
     int                                 numberOfFlags;
-
+    int                                 numberOfOpenedTiles;
     sf::Texture                         tilesTexture;
     sf::RenderTexture                   fieldTexture;
 

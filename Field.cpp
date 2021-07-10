@@ -16,6 +16,12 @@ Field::Field(const int fieldSize, const int numberOfMines)
 }
 
 
+void Field::render(sf::RenderTarget& target)
+{
+    target.draw(fieldSprite);
+}
+
+
 void Field::setPosition(const int x, const int y)
 {
     fieldSprite.setPosition(x, y);
@@ -35,6 +41,7 @@ const Tile Field::openTile(const int row, const int column)
     updateFieldTexture(row, column, field[row][column]);
     Tile openedTile = field[row][column];
     field[row][column] = OPEN;
+    ++numberOfOpenedTiles;
 
     return openedTile;
 }
@@ -70,11 +77,10 @@ const int Field::getNumberOfFlags() const
 }
 
 
-void Field::render(sf::RenderTarget& target)
+const int Field::getNumberOfOpenedTiles() const
 {
-    target.draw(fieldSprite);
+    return numberOfOpenedTiles;
 }
-
 
 
 void Field::initTiles()
@@ -89,6 +95,7 @@ void Field::initField()
     field.resize(FIELD_SIZE, std::vector<Tile>(FIELD_SIZE));
     setFlags.resize(FIELD_SIZE, std::vector<bool>(FIELD_SIZE, false));
     numberOfFlags = 0;
+    numberOfOpenedTiles = 0;
 
 
     // Placing mines at random positions

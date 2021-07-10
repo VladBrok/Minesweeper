@@ -31,10 +31,8 @@ void Game::run()
 
 void Game::initField()
 {
-    fieldRenderOffset = 2;
-    fieldSizeInTiles  = 9;
-    numberOfMines     = 10;
-    field = new Field(fieldSizeInTiles, numberOfMines);
+    fieldRenderOffset  = 2;
+    field = new Field(FILED_SIZE_IN_TILES, NUMBER_OF_MINES);
     field->setPosition(GRID_SIZE * fieldRenderOffset, GRID_SIZE * fieldRenderOffset);
 }
 
@@ -43,8 +41,8 @@ void Game::initWindow()
 {
     window.create(
         sf::VideoMode(
-            GRID_SIZE * (fieldSizeInTiles + fieldRenderOffset * 2), 
-            GRID_SIZE * (fieldSizeInTiles + fieldRenderOffset * 2)
+            GRID_SIZE * (FILED_SIZE_IN_TILES + fieldRenderOffset * 2), 
+            GRID_SIZE * (FILED_SIZE_IN_TILES + fieldRenderOffset * 2)
         ), 
         "Minesweeper", 
         sf::Style::Close
@@ -57,13 +55,33 @@ void Game::initText()
 {
     font.loadFromFile("Fonts/PixellettersFull.ttf");
 
+    // FIXME: Refactor
     minesCountText.setFont(font);
     minesCountText.setCharacterSize(25);
-    minesCountText.setColor(sf::Color::White);
     minesCountText.setPosition(
         GRID_SIZE * fieldRenderOffset,
         GRID_SIZE / 2
     );
+
+    gameOverText.setFont(font);
+    gameOverText.setCharacterSize(50);
+    gameOverText.setColor(sf::Color::Red);
+    gameOverText.setString("GAME OVER");
+    gameOverText.setStyle(sf::Text::Bold);
+    gameOverText.setPosition(
+        window.getSize().x / 2 - gameOverText.getGlobalBounds().width / 2,
+        window.getSize().y - gameOverText.getGlobalBounds().height - GRID_SIZE * 1.2f
+    );
+
+    victoryText.setFont(font);
+    victoryText.setCharacterSize(50);
+    victoryText.setColor(sf::Color::Green);
+    victoryText.setString("YOU WON!");
+    victoryText.setStyle(sf::Text::Bold);
+    victoryText.setPosition(
+        window.getSize().x / 2 - victoryText.getGlobalBounds().width / 2,
+        window.getSize().y - victoryText.getGlobalBounds().height - GRID_SIZE * 1.2f
+    );    
 }
 
 
@@ -93,6 +111,8 @@ void Game::processEvents()
                 break;
             }
             // Reacting on pressed mouse button
+
+            // FIXME: Refactor
         case sf::Event::MouseButtonPressed:
             {
                 if (gameState == GAME)
@@ -122,9 +142,15 @@ void Game::update()
 {
     std::stringstream msg;
     msg << "Mines marked: " << 
-           field->getNumberOfFlags() << "/" << numberOfMines
+           field->getNumberOfFlags() << "/" << NUMBER_OF_MINES
            << '\n';
     minesCountText.setString(msg.str());
+
+    if (field->getNumberOfOpenedTiles() + NUMBER_OF_MINES == 
+        FILED_SIZE_IN_TILES * FILED_SIZE_IN_TILES)
+    {
+        gameState = VICTORY;
+    }
 }
 
 
@@ -134,6 +160,16 @@ void Game::render()
 
     field->render(window);
     window.draw(minesCountText);
+
+    switch (gameState)
+    {
+    case DEFEAT:
+        window.draw(gameOverText);
+        break;
+    case VICTORY:
+        window.draw(victoryText);
+        break;
+    }
 
     window.display();
 }
