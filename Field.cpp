@@ -1,6 +1,5 @@
 #include "Field.h"
 #include <ctime>
-#include <iostream>
 
 
 Field::Field(const int fieldSize, const int numberOfMines)
@@ -14,10 +13,17 @@ Field::Field(const int fieldSize, const int numberOfMines)
 }
 
 
+void Field::setPosition(const int x, const int y)
+{
+    fieldSprite.setPosition(x, y);
+}
+
+
 void Field::openTile(const int row, const int column)
 {
     if (!positionIsValid(row, column) || 
-        field[row][column] == OPEN 
+        field[row][column] == OPEN ||
+        setFlags[row][column]
         )
     {
         return;
@@ -29,12 +35,25 @@ void Field::openTile(const int row, const int column)
 }
 
 
-void Field::setFlagAtTile(const int row, const int column)
+void Field::changeFlagStateAtTile(const int row, const int column)
 {
-    if (!positionIsValid(row, column) || field[row][column] == OPEN)
+    if (!positionIsValid(row, column) || 
+        field[row][column] == OPEN
+        )
+    {
         return;
+    }
 
-    updateFieldTexture(row, column, FLAG);
+    if (!setFlags[row][column])
+    {
+        updateFieldTexture(row, column, FLAG);
+        setFlags[row][column] = true;
+    }
+    else
+    {
+        updateFieldTexture(row, column, CLOSED);
+        setFlags[row][column] = false;
+    }
 }
 
 
@@ -42,6 +61,7 @@ void Field::render(sf::RenderTarget& target)
 {
     target.draw(fieldSprite);
 }
+
 
 
 void Field::initTiles()
@@ -54,6 +74,8 @@ void Field::initTiles()
 void Field::initField()
 {
     field.resize(FIELD_SIZE, std::vector<Tile>(FIELD_SIZE));
+    setFlags.resize(FIELD_SIZE, std::vector<bool>(FIELD_SIZE, false));
+
 
     // Placing mines at random positions
     std::vector<sf::Vector2i> minePositions(NUMBER_OF_MINES);

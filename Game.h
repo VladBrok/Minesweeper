@@ -9,13 +9,19 @@ class Game
 public:
 
                         Game();
+                        ~Game();
     void                run();
 
 private:
 
+    Field*              field;
+    int                 fieldRenderOffset;
+    int                 fieldSizeInTiles;
+    int                 numberOfMines;
     sf::RenderWindow    window;
-    Field               field;
 
+    void                initWindow();
+    void                initField();
     void                processEvents();
     void                update();
     void                render();

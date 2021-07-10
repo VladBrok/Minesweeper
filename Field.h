@@ -30,8 +30,9 @@ class Field
 public:
 
                                         Field(const int fieldSize = 9, const int numberOfMines = 10);
+    void                                setPosition(const int x, const int y);
     void                                openTile(const int row, const int column);
-    void                                setFlagAtTile(const int row, const int column);
+    void                                changeFlagStateAtTile(const int row, const int column);
     void                                render(sf::RenderTarget& target);
 
 private:
@@ -44,6 +45,7 @@ private:
     sf::Sprite                          fieldSprite;
 
     std::vector<std::vector<Tile>>      field;
+    std::vector<std::vector<bool>>      setFlags;
 
     void                                initTiles();
     void                                initField();
