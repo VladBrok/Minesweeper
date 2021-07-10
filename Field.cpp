@@ -16,8 +16,12 @@ Field::Field(const int fieldSize, const int numberOfMines)
 
 void Field::openTile(const int row, const int column)
 {
-    if (!positionIsValid(row, column) || field[row][column] == OPEN)
+    if (!positionIsValid(row, column) || 
+        field[row][column] == OPEN 
+        )
+    {
         return;
+    }
 
     updateFieldTexture(row, column, field[row][column]);
 
@@ -102,7 +106,6 @@ void Field::initFieldTexture()
     fieldTexture.create(FIELD_SIZE * GRID_SIZE, FIELD_SIZE * GRID_SIZE);
 
 
-    // fieldTexture.clear(); ?????
     tilesSprite.setTextureRect(sf::IntRect(CLOSED * GRID_SIZE, 0, GRID_SIZE, GRID_SIZE));
 
     // Making all tiles closed
