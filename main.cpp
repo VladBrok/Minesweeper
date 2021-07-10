@@ -4,7 +4,7 @@
  *  TODO:
  *  - add game over (victory / defeat)
  *  - add specific reaction on opening empty tile
- *  - make mines counter
+ *  - fix the stupid mine generation algorithm with O(n^n) time complexity!!
  */
 
 int main()

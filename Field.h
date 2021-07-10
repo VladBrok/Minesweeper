@@ -31,18 +31,23 @@ public:
 
                                         Field(const int fieldSize = 9, const int numberOfMines = 10);
     void                                setPosition(const int x, const int y);
-    void                                openTile(const int row, const int column);
+    const Tile                          openTile(const int row, const int column); // returns opened tile
     void                                changeFlagStateAtTile(const int row, const int column);
+    const int                           getNumberOfFlags() const;
     void                                render(sf::RenderTarget& target);
 
 private:
 
     const int                           FIELD_SIZE;
     const int                           NUMBER_OF_MINES;
+    int                                 numberOfFlags;
+
     sf::Texture                         tilesTexture;
     sf::RenderTexture                   fieldTexture;
+
     sf::Sprite                          tilesSprite;
     sf::Sprite                          fieldSprite;
+
 
     std::vector<std::vector<Tile>>      field;
     std::vector<std::vector<bool>>      setFlags;

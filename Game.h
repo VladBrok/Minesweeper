@@ -4,6 +4,14 @@
 #include "Field.h"
 
 
+enum GameState
+{
+    GAME,
+    VICTORY,
+    DEFEAT
+};
+
+
 class Game
 {
 public:
@@ -14,14 +22,21 @@ public:
 
 private:
 
+    GameState           gameState;
     Field*              field;
     int                 fieldRenderOffset;
     int                 fieldSizeInTiles;
     int                 numberOfMines;
     sf::RenderWindow    window;
 
-    void                initWindow();
+    sf::Font            font;
+    sf::Text            minesCountText;
+    sf::Text            victoryText;
+    sf::Text            gameOverText;
+
     void                initField();
+    void                initWindow();
+    void                initText();
     void                processEvents();
     void                update();
     void                render();

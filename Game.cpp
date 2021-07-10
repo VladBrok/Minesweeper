@@ -1,10 +1,14 @@
 #include "Game.h"
+#include <sstream>
 #include <iostream>
+
 
 Game::Game()
 {
+    gameState = GAME;
     initField();
     initWindow();
+    initText();
 }
 
 
@@ -45,7 +49,21 @@ void Game::initWindow()
         "Minesweeper", 
         sf::Style::Close
     );
-    window.setFramerateLimit(60);
+    window.setFramerateLimit(30);
+}
+
+
+void Game::initText()
+{
+    font.loadFromFile("Fonts/PixellettersFull.ttf");
+
+    minesCountText.setFont(font);
+    minesCountText.setCharacterSize(25);
+    minesCountText.setColor(sf::Color::White);
+    minesCountText.setPosition(
+        GRID_SIZE * fieldRenderOffset,
+        GRID_SIZE / 2
+    );
 }
 
 
@@ -74,15 +92,25 @@ void Game::processEvents()
                 }
                 break;
             }
+            // Reacting on pressed mouse button
         case sf::Event::MouseButtonPressed:
             {
-                if (event.mouseButton.button == sf::Mouse::Left)
+                if (gameState == GAME)
                 {
-                     field->openTile(mousePosGrid.x, mousePosGrid.y);
-                }
-                else if (event.mouseButton.button == sf::Mouse::Right)
-                {
-                    field->changeFlagStateAtTile(mousePosGrid.x, mousePosGrid.y);
+                    // Open tile
+                    if (event.mouseButton.button == sf::Mouse::Left)
+                    {
+                        // Checking if we opened a tile with mine
+                        if (field->openTile(mousePosGrid.x, mousePosGrid.y) == MINE)
+                        {
+                            gameState = DEFEAT;
+                        };
+                    }
+                    // Set or remove flag in tile
+                    else if (event.mouseButton.button == sf::Mouse::Right)
+                    {
+                        field->changeFlagStateAtTile(mousePosGrid.x, mousePosGrid.y);
+                    }
                 }
             }
         }
@@ -92,6 +120,11 @@ void Game::processEvents()
 
 void Game::update()
 {
+    std::stringstream msg;
+    msg << "Mines marked: " << 
+           field->getNumberOfFlags() << "/" << numberOfMines
+           << '\n';
+    minesCountText.setString(msg.str());
 }
 
 
@@ -100,6 +133,7 @@ void Game::render()
     window.clear();
 
     field->render(window);
+    window.draw(minesCountText);
 
     window.display();
 }

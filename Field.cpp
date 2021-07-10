@@ -1,10 +1,13 @@
 #include "Field.h"
 #include <ctime>
+#include <cassert>
 
 
 Field::Field(const int fieldSize, const int numberOfMines)
     : FIELD_SIZE(fieldSize), NUMBER_OF_MINES(numberOfMines)
 {
+    assert(numberOfMines <= fieldSize * fieldSize);
+
     srand(time(nullptr));
 
     initTiles();
@@ -19,19 +22,21 @@ void Field::setPosition(const int x, const int y)
 }
 
 
-void Field::openTile(const int row, const int column)
+const Tile Field::openTile(const int row, const int column)
 {
     if (!positionIsValid(row, column) || 
         field[row][column] == OPEN ||
         setFlags[row][column]
         )
     {
-        return;
+        return CLOSED;
     }
 
     updateFieldTexture(row, column, field[row][column]);
-
+    Tile openedTile = field[row][column];
     field[row][column] = OPEN;
+
+    return openedTile;
 }
 
 
@@ -48,12 +53,20 @@ void Field::changeFlagStateAtTile(const int row, const int column)
     {
         updateFieldTexture(row, column, FLAG);
         setFlags[row][column] = true;
+        ++numberOfFlags;
     }
     else
     {
         updateFieldTexture(row, column, CLOSED);
         setFlags[row][column] = false;
+        --numberOfFlags;
     }
+}
+
+
+const int Field::getNumberOfFlags() const
+{
+    return numberOfFlags;
 }
 
 
@@ -75,6 +88,7 @@ void Field::initField()
 {
     field.resize(FIELD_SIZE, std::vector<Tile>(FIELD_SIZE));
     setFlags.resize(FIELD_SIZE, std::vector<bool>(FIELD_SIZE, false));
+    numberOfFlags = 0;
 
 
     // Placing mines at random positions
