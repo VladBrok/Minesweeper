@@ -124,6 +124,7 @@ void Game::processEvents()
                         if (field->openTile(mousePosGrid.x, mousePosGrid.y) == MINE)
                         {
                             gameState = DEFEAT;
+                            field->openAllTiles();
                         };
                     }
                     // Set or remove flag in tile
@@ -147,9 +148,11 @@ void Game::update()
     minesCountText.setString(msg.str());
 
     if (field->getNumberOfOpenedTiles() + NUMBER_OF_MINES == 
-        FILED_SIZE_IN_TILES * FILED_SIZE_IN_TILES)
+        FILED_SIZE_IN_TILES * FILED_SIZE_IN_TILES &&
+        gameState != DEFEAT)
     {
         gameState = VICTORY;
+        field->openAllTiles();
     }
 }
 

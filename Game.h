@@ -4,7 +4,7 @@
 #include "Field.h"
 
 
-const int FILED_SIZE_IN_TILES  = 10;
+const int FILED_SIZE_IN_TILES  = 9;
 const int NUMBER_OF_MINES      = 10;
 
 

@@ -34,6 +34,7 @@ public:
     void                                setPosition(const int x, const int y);
 
     const Tile                          openTile(const int row, const int column); // returns opened tile
+    void                                openAllTiles();
     void                                changeFlagStateAtTile(const int row, const int column);
     const int                           getNumberOfFlags() const;
     const int                           getNumberOfOpenedTiles() const;
@@ -57,6 +58,7 @@ private:
     void                                initTiles();
     void                                initField();
     void                                initFieldTexture();
+    void                                placeMines();
     void                                updateFieldTexture(const int row, const int column, const Tile newTile);
     const bool                          positionIsValid(const int row, const int column) const;
 

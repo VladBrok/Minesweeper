@@ -6,7 +6,7 @@
 Field::Field(const int fieldSize, const int numberOfMines)
     : FIELD_SIZE(fieldSize), NUMBER_OF_MINES(numberOfMines)
 {
-    assert(numberOfMines <= fieldSize * fieldSize);
+    assert(numberOfMines < fieldSize * fieldSize);
 
     srand(time(nullptr));
 
@@ -44,6 +44,21 @@ const Tile Field::openTile(const int row, const int column)
     ++numberOfOpenedTiles;
 
     return openedTile;
+}
+
+
+void Field::openAllTiles()
+{
+    for (int i = 0; i < FIELD_SIZE; ++i)
+    {
+        for (int j = 0; j < FIELD_SIZE; ++j)
+        {
+            if (field[i][j] != OPEN)
+            {
+                updateFieldTexture(i, j, field[i][j]);
+            }
+        }
+    }
 }
 
 
@@ -97,22 +112,7 @@ void Field::initField()
     numberOfFlags = 0;
     numberOfOpenedTiles = 0;
 
-
-    // Placing mines at random positions
-    std::vector<sf::Vector2i> minePositions(NUMBER_OF_MINES);
-    sf::Vector2i minePos;
-    for (int i = 0; i < NUMBER_OF_MINES; ++i)
-    {
-        // Making sure that 2 or more mines won't spawn at the same position
-        do
-        {
-            minePos = sf::Vector2i(rand() % FIELD_SIZE, rand() % FIELD_SIZE);
-        }while(std::find(minePositions.begin(), minePositions.end(), minePos) != minePositions.end());
-
-        field[minePos.x][minePos.y] = MINE;
-        minePositions[i] = minePos;
-    }
-
+    placeMines();
 
     // Offsets to check all eight neighbouring tiles of specific tile
     int offsetsI[8] = {-1, -1, 0, 1, 1, 1, 0, -1};
@@ -164,6 +164,23 @@ void Field::initFieldTexture()
     fieldTexture.display();
 
     fieldSprite.setTexture(fieldTexture.getTexture());
+}
+
+
+void Field::placeMines()
+{
+    std::vector<int> fieldTileNumbers;
+    for (int n = 0; n < FIELD_SIZE * FIELD_SIZE; ++n)
+    {
+        fieldTileNumbers.push_back(n);
+    }
+
+    std::random_shuffle(fieldTileNumbers.begin(), fieldTileNumbers.end());
+
+    for (int i = 0; i < NUMBER_OF_MINES; ++i)
+    {
+        field[fieldTileNumbers[i] / FIELD_SIZE][fieldTileNumbers[i] % FIELD_SIZE] = MINE;
+    }
 }
 
 

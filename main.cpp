@@ -3,8 +3,8 @@
 /**
  *  TODO:
  *  - add specific reaction on opening empty tile
- *  - fix the stupid mine generation algorithm with O(n^n) time complexity!!
  *  - move update stuff to the event processing
+ *  - refactor some parts of code
  */
 
 int main()
