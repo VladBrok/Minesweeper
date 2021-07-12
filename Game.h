@@ -40,8 +40,10 @@ private:
     void                initWindow();
     void                initText();
     void                processEvents();
-    void                update();
     void                render();
+    void                updateMouseInput(const sf::Mouse::Button pressedButton);
+    void                updateGameState(const Tile lastOpenedTile);
+    void                updateMinesCountText();
     void                createText(sf::Text& text,
                                    const unsigned& charSize,
                                    const sf::Color& color,
@@ -49,11 +51,6 @@ private:
                                    const sf::Text::Style& style,
                                    const sf::Vector2f& position = sf::Vector2f(0.f, 0.f)
                                    );
-
-
-
-
-
 };
 
 

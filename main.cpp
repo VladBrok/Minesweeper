@@ -2,8 +2,7 @@
 
 /**
  *  TODO:
- *  - refactor some parts of code
- *  - move update functions to the event processing
+ *  - add game restart
  */
 
 int main()

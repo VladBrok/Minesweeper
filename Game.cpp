@@ -6,6 +6,7 @@
 Game::Game()
 {
     gameState = GAME;
+
     initField();
     initWindow();
     initText();
@@ -23,7 +24,6 @@ void Game::run()
     while (window.isOpen())
     {
         processEvents();
-        update();
         render();
     }
 }
@@ -62,7 +62,8 @@ void Game::initText()
                    GRID_SIZE * fieldRenderOffset,
                    GRID_SIZE / 2
                    )
-               );   
+               );
+    updateMinesCountText();
    
     createText(gameOverText, 50, sf::Color::Red, "GAME OVER", sf::Text::Bold);
 
@@ -82,11 +83,6 @@ void Game::initText()
 
 void Game::processEvents()
 {
-    sf::Vector2i mousePosGrid(
-        sf::Mouse::getPosition(window).x / GRID_SIZE - fieldRenderOffset, 
-        sf::Mouse::getPosition(window).y / GRID_SIZE - fieldRenderOffset
-    );
-
     sf::Event event;
     while (window.pollEvent(event))
     {
@@ -105,49 +101,14 @@ void Game::processEvents()
                 }
                 break;
             }
-            // Reacting on pressed mouse button
-
-            // FIXME: Refactor
         case sf::Event::MouseButtonPressed:
             {
                 if (gameState == GAME)
                 {
-                    // Open tile
-                    if (event.mouseButton.button == sf::Mouse::Left)
-                    {
-                        // Checking if we opened a tile with mine
-                        if (field->openTile(mousePosGrid.x, mousePosGrid.y) == MINE)
-                        {
-                            gameState = DEFEAT;
-                            field->openAllTiles();
-                        };
-                    }
-                    // Set or remove flag in tile
-                    else if (event.mouseButton.button == sf::Mouse::Right)
-                    {
-                        field->changeFlagStateAtTile(mousePosGrid.x, mousePosGrid.y);
-                    }
+                    updateMouseInput(event.mouseButton.button);
                 }
             }
         }
-    }
-}
-
-
-void Game::update()
-{
-    std::stringstream msg;
-    msg << "Mines marked: " << 
-           field->getNumberOfFlags() << "/" << NUMBER_OF_MINES
-           << '\n';
-    minesCountText.setString(msg.str());
-
-    if (field->getNumberOfOpenedTiles() + NUMBER_OF_MINES == 
-        FILED_SIZE_IN_TILES * FILED_SIZE_IN_TILES &&
-        gameState != DEFEAT)
-    {
-        gameState = VICTORY;
-        field->openAllTiles();
     }
 }
 
@@ -170,6 +131,55 @@ void Game::render()
     }
 
     window.display();
+}
+
+
+void Game::updateMouseInput(const sf::Mouse::Button pressedButton)
+{
+    sf::Vector2i mousePosGrid(
+        sf::Mouse::getPosition(window).x / GRID_SIZE - fieldRenderOffset, 
+        sf::Mouse::getPosition(window).y / GRID_SIZE - fieldRenderOffset
+    );
+
+    // Open tile and update game state
+    if (pressedButton == sf::Mouse::Left)
+    {
+        updateGameState(field->openTile(mousePosGrid.x, mousePosGrid.y));
+    }
+
+    // Set or remove flag in tile
+    else if (pressedButton == sf::Mouse::Right)
+    {
+        field->changeFlagStateAtTile(mousePosGrid.x, mousePosGrid.y);
+        updateMinesCountText();
+    }
+}
+
+
+void Game::updateGameState(const Tile lastOpenedTile)
+{
+    if (lastOpenedTile == MINE)
+    {
+        gameState = DEFEAT;
+        field->openAllTiles();
+    }
+
+    else if (field->getNumberOfOpenedTiles() + NUMBER_OF_MINES == 
+             FILED_SIZE_IN_TILES * FILED_SIZE_IN_TILES)
+    {
+        gameState = VICTORY;
+        field->openAllTiles();
+    }
+}
+
+
+void Game::updateMinesCountText()
+{
+    std::stringstream msg;
+    msg << "Mines marked: " << 
+           field->getNumberOfFlags() << "/" << NUMBER_OF_MINES
+           << '\n';
+    minesCountText.setString(msg.str());
 }
 
 
