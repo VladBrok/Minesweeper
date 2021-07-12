@@ -61,7 +61,7 @@ private:
     void                                placeMines();
     void                                updateFieldTexture(const int row, const int column, const Tile newTile);
     const bool                          positionIsValid(const int row, const int column) const;
-
+    void                                openEmptyTiles(const int start_row, const int start_col);
 };
 
 

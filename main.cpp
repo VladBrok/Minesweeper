@@ -2,7 +2,6 @@
 
 /**
  *  TODO:
- *  - add specific reaction on opening empty tile
  *  - move update stuff to the event processing
  *  - refactor some parts of code
  */

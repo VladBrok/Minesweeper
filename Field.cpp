@@ -1,6 +1,7 @@
 #include "Field.h"
 #include <ctime>
 #include <cassert>
+#include <queue>
 
 
 Field::Field(const int fieldSize, const int numberOfMines)
@@ -42,6 +43,11 @@ const Tile Field::openTile(const int row, const int column)
     Tile openedTile = field[row][column];
     field[row][column] = OPEN;
     ++numberOfOpenedTiles;
+
+    if (openedTile == EMPTY)
+    {
+        openEmptyTiles(row, column);
+    }
 
     return openedTile;
 }
@@ -197,4 +203,37 @@ const bool Field::positionIsValid(const int row, const int column) const
 {
     return row >= 0 && row < FIELD_SIZE &&
            column >= 0 && column < FIELD_SIZE;
+}
+
+
+void Field::openEmptyTiles(const int start_row, const int start_col)
+{
+    std::queue<sf::Vector2i> positionsQueue;
+    positionsQueue.push(sf::Vector2i(start_row, start_col));
+
+    // Offsets to check all eight neighbouring tiles of specific tile
+    int offsetsI[8] = {-1, -1, 0, 1, 1, 1, 0, -1};
+    int offsetsJ[8] = {0, 1, 1, 1, 0, -1, -1, -1};
+
+    while (!positionsQueue.empty())
+    {
+        sf::Vector2i curPos = positionsQueue.front();
+        for (int k = 0; k < 8; ++k)
+        {
+            sf::Vector2i checkPos(curPos.x + offsetsI[k], curPos.y + offsetsJ[k]);
+            if (positionIsValid(checkPos.x, checkPos.y) &&
+                field[checkPos.x][checkPos.y] != MINE && 
+                field[checkPos.x][checkPos.y] != OPEN)
+            {
+                if (field[checkPos.x][checkPos.y] == EMPTY)
+                {
+                    positionsQueue.push(checkPos);
+                }
+                updateFieldTexture(checkPos.x, checkPos.y, field[checkPos.x][checkPos.y]);
+                field[checkPos.x][checkPos.y] = OPEN;
+                ++numberOfOpenedTiles;
+            }
+        }
+        positionsQueue.pop();
+    }
 }
