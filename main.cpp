@@ -2,8 +2,8 @@
 
 /**
  *  TODO:
- *  - move update stuff to the event processing
  *  - refactor some parts of code
+ *  - move update functions to the event processing
  */
 
 int main()

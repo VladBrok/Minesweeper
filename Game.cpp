@@ -55,29 +55,24 @@ void Game::initText()
 {
     font.loadFromFile("Fonts/PixellettersFull.ttf");
 
-    // FIXME: Refactor
-    minesCountText.setFont(font);
-    minesCountText.setCharacterSize(25);
-    minesCountText.setPosition(
-        GRID_SIZE * fieldRenderOffset,
-        GRID_SIZE / 2
-    );
 
-    gameOverText.setFont(font);
-    gameOverText.setCharacterSize(50);
-    gameOverText.setColor(sf::Color::Red);
-    gameOverText.setString("GAME OVER");
-    gameOverText.setStyle(sf::Text::Bold);
+    createText(minesCountText, 25, sf::Color::White, "", 
+               sf::Text::Regular, 
+               sf::Vector2f(
+                   GRID_SIZE * fieldRenderOffset,
+                   GRID_SIZE / 2
+                   )
+               );   
+   
+    createText(gameOverText, 50, sf::Color::Red, "GAME OVER", sf::Text::Bold);
+
+    createText(victoryText, 50, sf::Color::Green, "YOU WON!", sf::Text::Bold);
+ 
     gameOverText.setPosition(
         window.getSize().x / 2 - gameOverText.getGlobalBounds().width / 2,
         window.getSize().y - gameOverText.getGlobalBounds().height - GRID_SIZE * 1.2f
     );
 
-    victoryText.setFont(font);
-    victoryText.setCharacterSize(50);
-    victoryText.setColor(sf::Color::Green);
-    victoryText.setString("YOU WON!");
-    victoryText.setStyle(sf::Text::Bold);
     victoryText.setPosition(
         window.getSize().x / 2 - victoryText.getGlobalBounds().width / 2,
         window.getSize().y - victoryText.getGlobalBounds().height - GRID_SIZE * 1.2f
@@ -175,4 +170,21 @@ void Game::render()
     }
 
     window.display();
+}
+
+
+void Game::createText(sf::Text& text,
+                      const unsigned& charSize,
+                      const sf::Color& color,
+                      const std::string& string,
+                      const sf::Text::Style& style,
+                      const sf::Vector2f& position
+                      )
+{
+    text.setFont(font);
+    text.setCharacterSize(charSize);
+    text.setColor(color);
+    text.setString(string);
+    text.setStyle(style);
+    text.setPosition(position);
 }
