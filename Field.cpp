@@ -10,10 +10,9 @@ Field::Field(const int fieldSize, const int numberOfMines)
     assert(numberOfMines < fieldSize * fieldSize);
 
     srand(time(nullptr));
-
-    initTiles();
-    initField();
-    initFieldTexture();
+    
+    initTilesTexture();
+    generateNewField();
 }
 
 
@@ -26,6 +25,13 @@ void Field::render(sf::RenderTarget& target)
 void Field::setPosition(const int x, const int y)
 {
     fieldSprite.setPosition(x, y);
+}
+
+
+void Field::generateNewField()
+{
+    initField();
+    initFieldTexture();
 }
 
 
@@ -104,7 +110,7 @@ const int Field::getNumberOfOpenedTiles() const
 }
 
 
-void Field::initTiles()
+void Field::initTilesTexture()
 {
     tilesTexture.loadFromFile("Textures/tiles.jpg");
     tilesSprite.setTexture(tilesTexture);
@@ -113,7 +119,9 @@ void Field::initTiles()
 
 void Field::initField()
 {
-    field.resize(FIELD_SIZE, std::vector<Tile>(FIELD_SIZE));
+    field.clear();
+    setFlags.clear();
+    field.resize(FIELD_SIZE, std::vector<Tile>(FIELD_SIZE, EMPTY));
     setFlags.resize(FIELD_SIZE, std::vector<bool>(FIELD_SIZE, false));
     numberOfFlags = 0;
     numberOfOpenedTiles = 0;
@@ -153,7 +161,7 @@ void Field::initField()
 void Field::initFieldTexture()
 {
     fieldTexture.create(FIELD_SIZE * GRID_SIZE, FIELD_SIZE * GRID_SIZE);
-
+    fieldTexture.clear();
 
     tilesSprite.setTextureRect(sf::IntRect(CLOSED * GRID_SIZE, 0, GRID_SIZE, GRID_SIZE));
 
@@ -231,6 +239,11 @@ void Field::openEmptyTiles(const int start_row, const int start_col)
                 }
                 updateFieldTexture(checkPos.x, checkPos.y, field[checkPos.x][checkPos.y]);
                 field[checkPos.x][checkPos.y] = OPEN;
+                if (setFlags[checkPos.x][checkPos.y])
+                {
+                    setFlags[checkPos.x][checkPos.y] = false;
+                    --numberOfFlags;
+                }
                 ++numberOfOpenedTiles;
             }
         }

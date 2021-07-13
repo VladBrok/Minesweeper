@@ -4,8 +4,8 @@
 #include "Field.h"
 
 
-const int FILED_SIZE_IN_TILES  = 9;//16;
-const int NUMBER_OF_MINES      = 10;//40;
+const int FILED_SIZE_IN_TILES  = 16;
+const int NUMBER_OF_MINES      = 40;
 
 
 enum GameState
@@ -35,6 +35,7 @@ private:
     sf::Text            minesCountText;
     sf::Text            gameOverText;
     sf::Text            victoryText;
+    sf::Text            restartGameText;
 
     void                initField();
     void                initWindow();

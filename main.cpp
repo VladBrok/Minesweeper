@@ -1,9 +1,5 @@
 #include "Game.h"
 
-/**
- *  TODO:
- *  - add game restart
- */
 
 int main()
 {

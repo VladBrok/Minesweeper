@@ -42,7 +42,7 @@ void Game::initWindow()
     window.create(
         sf::VideoMode(
             GRID_SIZE * (FILED_SIZE_IN_TILES + fieldRenderOffset * 2), 
-            GRID_SIZE * (FILED_SIZE_IN_TILES + fieldRenderOffset * 2)
+            GRID_SIZE * (FILED_SIZE_IN_TILES + fieldRenderOffset * 3)
         ), 
         "Minesweeper", 
         sf::Style::Close
@@ -71,13 +71,21 @@ void Game::initText()
  
     gameOverText.setPosition(
         window.getSize().x / 2 - gameOverText.getGlobalBounds().width / 2,
-        window.getSize().y - gameOverText.getGlobalBounds().height - GRID_SIZE * 1.2f
+        window.getSize().y - gameOverText.getGlobalBounds().height - GRID_SIZE * 3.f
     );
 
     victoryText.setPosition(
         window.getSize().x / 2 - victoryText.getGlobalBounds().width / 2,
-        window.getSize().y - victoryText.getGlobalBounds().height - GRID_SIZE * 1.2f
-    );    
+        window.getSize().y - victoryText.getGlobalBounds().height - GRID_SIZE * 3.f
+    );   
+
+    createText(restartGameText, 30, sf::Color::White, "Press space to start new game", 
+               sf::Text::Regular, sf::Vector2f(GRID_SIZE / 2.f, 
+                                               gameOverText.getGlobalBounds().top + 
+                                               gameOverText.getGlobalBounds().height +
+                                               GRID_SIZE
+                                               )
+               );
 }
 
 
@@ -99,6 +107,12 @@ void Game::processEvents()
                 {
                     window.close();
                 }
+                else if (gameState != GAME && 
+                         event.key.code == sf::Keyboard::Space)
+                {
+                    field->generateNewField();
+                    gameState = GAME;
+                }
                 break;
             }
         case sf::Event::MouseButtonPressed:
@@ -109,6 +123,7 @@ void Game::processEvents()
                 }
             }
         }
+        updateMinesCountText();
     }
 }
 
@@ -124,9 +139,11 @@ void Game::render()
     {
     case DEFEAT:
         window.draw(gameOverText);
+        window.draw(restartGameText);
         break;
     case VICTORY:
         window.draw(victoryText);
+        window.draw(restartGameText);
         break;
     }
 

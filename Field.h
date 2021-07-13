@@ -32,6 +32,7 @@ public:
                                         Field(const int fieldSize = 9, const int numberOfMines = 10);
     void                                render(sf::RenderTarget& target);
     void                                setPosition(const int x, const int y);
+    void                                generateNewField();
 
     const Tile                          openTile(const int row, const int column); // returns opened tile
     void                                openAllTiles();
@@ -55,7 +56,7 @@ private:
     std::vector<std::vector<Tile>>      field;
     std::vector<std::vector<bool>>      setFlags;
 
-    void                                initTiles();
+    void                                initTilesTexture();
     void                                initField();
     void                                initFieldTexture();
     void                                placeMines();
